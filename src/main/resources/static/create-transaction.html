@@ -1,0 +1,508 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Transaction | Finance Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-dark: #3a56d4;
+            --primary-light: #e6e9ff;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --light-gray: #f5f7fa;
+            --success-color: #4bb543;
+            --error-color: #ff4d4d;
+            --warning-color: #ffa500;
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            --box-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-gray);
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        .logo i {
+            color: var(--primary-color);
+            margin-right: 10px;
+            font-size: 24px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray-color);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        .nav-links a.active:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary-color);
+            border-radius: 3px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .user-profile {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-profile img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-profile span {
+            font-weight: 500;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--box-shadow);
+            padding: 10px 0;
+            width: 180px;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 10;
+        }
+
+        .user-profile:hover .dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(5px);
+        }
+
+        .dropdown a {
+            display: flex;
+            align-items: center;
+            padding: 8px 15px;
+            color: var(--dark-color);
+            font-size: 14px;
+        }
+
+        .dropdown a:hover {
+            background: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .dropdown a i {
+            margin-right: 10px;
+            width: 18px;
+            text-align: center;
+        }
+
+        /* Form Styles */
+        .form-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 30px;
+            margin-top: 30px;
+        }
+
+        .form-header {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-header h1 {
+            font-size: 24px;
+            color: var(--dark-color);
+            margin-bottom: 10px;
+        }
+
+        .form-header p {
+            color: var(--gray-color);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: var(--border-radius-sm);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 20px;
+            margin-top: 10px;
+        }
+
+        .radio-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .radio-option input {
+            margin: 0;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 24px;
+            border-radius: var(--border-radius-sm);
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            border: none;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+            margin-top: 10px;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-light);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+
+            .form-container {
+                padding: 20px;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <nav class="navbar">
+            <a href="home.html" class="logo">
+                <i class="fas fa-wallet"></i>
+                <span>Finance Tracker</span>
+            </a>
+            <div class="nav-links">
+                <a href="home.html">Dashboard</a>
+                <a href="transactions.html">Transactions</a>
+                <a href="groups.html" class="active">Groups</a>
+                <a href="reports.html">Reports</a>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=User&background=4361ee&color=fff" alt="User">
+                    <span>User</span>
+                    <div class="dropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        <div class="form-container">
+            <div class="form-header">
+                <h1>Create New Transaction</h1>
+                <p>Record your income or expense with details</p>
+            </div>
+
+            <form id="transactionForm">
+                <div class="form-group">
+                    <label for="amount">Amount</label>
+                    <input type="number" id="amount" class="form-control" placeholder="0.00" step="0.01" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Transaction Type</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="type" value="INCOME" checked>
+                            Income
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="type" value="EXPENSE">
+                            Expense
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <input type="text" id="category" class="form-control" placeholder="e.g. Salary, Groceries, Rent" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="group">Group</label>
+                    <select id="group" class="form-control" required>
+                        <option value="">Select a group</option>
+                        <!-- Groups will be populated by JavaScript -->
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="date">Date</label>
+                    <input type="date" id="date" class="form-control" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="note">Note (Optional)</label>
+                    <textarea id="note" class="form-control" rows="3" placeholder="Add any additional details"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Create Transaction</button>
+                <a href="home.html" class="btn btn-outline">Cancel</a>
+            </form>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check authentication
+        const authToken = localStorage.getItem('authToken');
+        if (!authToken) {
+            window.location.href = 'index.html';
+            return;
+        }
+
+        loadUserData();
+
+        async function loadUserData() {
+            try {
+                const response = await fetch('/api/user/me', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+
+                const userData = await response.json();
+                document.querySelector('.user-profile span').textContent = userData.username;
+                document.querySelector('.user-profile img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.username)}&background=4361ee&color=fff`;
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        // DOM Elements
+        const logoutBtn = document.getElementById('logoutBtn');
+        const transactionForm = document.getElementById('transactionForm');
+        const groupSelect = document.getElementById('group');
+
+        // Set default date to today
+        document.getElementById('date').valueAsDate = new Date();
+
+        // Fetch groups from API
+        fetchGroups();
+
+        // Event Listeners
+        logoutBtn.addEventListener('click', function() {
+            localStorage.removeItem('authToken');
+            window.location.href = 'index.html';
+        });
+
+        transactionForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            createTransaction();
+        });
+
+        // Functions
+        async function fetchGroups() {
+            try {
+                const response = await fetch('/api/groups', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch groups');
+                }
+
+                const groups = await response.json();
+                populateGroupDropdown(groups);
+            } catch (error) {
+                console.error('Error fetching groups:', error);
+                alert('Failed to load groups. Please try again.');
+            }
+        }
+
+        function populateGroupDropdown(groups) {
+            groupSelect.innerHTML = '<option value="">Select a group</option>';
+
+            groups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group.id;
+                option.textContent = group.name;
+                groupSelect.appendChild(option);
+            });
+        }
+
+        async function createTransaction() {
+            const amount = document.getElementById('amount').value;
+            const type = document.querySelector('input[name="type"]:checked').value;
+            const category = document.getElementById('category').value;
+            const groupId = document.getElementById('group').value;
+            const date = document.getElementById('date').value;
+            const note = document.getElementById('note').value;
+
+            if (!groupId) {
+                alert('Please select a group');
+                return;
+            }
+
+            const transactionData = {
+                amount: parseFloat(amount),
+                type,
+                category,
+                groupId: parseInt(groupId),
+                date,
+                note
+            };
+
+            try {
+                const response = await fetch('/api/transactions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(transactionData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to create transaction');
+                }
+
+                const result = await response.json();
+                alert('Transaction created successfully!');
+                window.location.href = `transactions.html?groupId=${groupId}`; // Redirect to transactions page
+            } catch (error) {
+                console.error('Error creating transaction:', error);
+                alert('Failed to create transaction. Please try again.');
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Finance Tracker | Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-dark: #3a56d4;
+            --primary-light: #e6e9ff;
+            --secondary-color: #3f37c9;
+            --accent-color: #4895ef;
+            --light-color: #f8f9fa;
+            --dark-color: #212529;
+            --gray-color: #6c757d;
+            --light-gray: #f5f7fa;
+            --success-color: #4bb543;
+            --error-color: #ff4d4d;
+            --warning-color: #ffa500;
+            --border-radius: 12px;
+            --border-radius-sm: 8px;
+            --box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            --box-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            --gradient-primary: linear-gradient(135deg, #4361ee 0%, #3f37c9 100%);
+            --gradient-accent: linear-gradient(135deg, #4895ef 0%, #4361ee 100%);
+            --gradient-success: linear-gradient(135deg, #4bb543 0%, #3a9e3a 100%);
+            --gradient-error: linear-gradient(135deg, #ff4d4d 0%, #ff3333 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8faff;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header Styles */
+        header {
+            background: white;
+            box-shadow: 0 2px 20px rgba(67, 97, 238, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(5px);
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--dark-color);
+            font-weight: 700;
+            font-size: 22px;
+            letter-spacing: -0.5px;
+        }
+
+        .logo i {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-right: 10px;
+            font-size: 26px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray-color);
+            font-weight: 500;
+            transition: var(--transition);
+            position: relative;
+            font-size: 15px;
+        }
+
+        .nav-links a.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .nav-links a.active:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-primary);
+            border-radius: 3px;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .user-profile {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+        }
+
+        .user-profile img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--primary-light);
+            transition: var(--transition);
+        }
+
+        .user-profile:hover img {
+            border-color: var(--primary-color);
+        }
+
+        .user-profile span {
+            font-weight: 500;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: var(--border-radius-sm);
+            box-shadow: 0 10px 30px rgba(67, 97, 238, 0.15);
+            padding: 10px 0;
+            width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 10;
+            transform: translateY(10px);
+        }
+
+        .user-profile:hover .dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(15px);
+        }
+
+        .dropdown a {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            color: var(--dark-color);
+            font-size: 14px;
+            transition: var(--transition);
+        }
+
+        .dropdown a:hover {
+            background: var(--primary-light);
+            color: var(--primary-color);
+            padding-left: 25px;
+        }
+
+        .dropdown a i {
+            margin-right: 10px;
+            width: 18px;
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        /* Main Content Styles */
+        .main-content {
+            padding: 30px 0 50px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+        }
+
+        .page-title {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--dark-color);
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+            letter-spacing: -0.5px;
+        }
+
+        .welcome-message {
+            font-size: 16px;
+            color: var(--gray-color);
+            font-weight: 400;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .quick-action-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+            border: 1px solid rgba(67, 97, 238, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-action-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+            transition: var(--transition);
+            transform: scaleX(0);
+            transform-origin: left;
+        }
+
+        .quick-action-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(67, 97, 238, 0.15);
+            border-color: var(--primary-light);
+        }
+
+        .quick-action-card:hover:before {
+            transform: scaleX(1);
+        }
+
+        .quick-action-card i {
+            font-size: 36px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            background: var(--primary-light);
+            width: 70px;
+            height: 70px;
+            line-height: 70px;
+            border-radius: 50%;
+            text-align: center;
+            display: inline-block;
+            transition: var(--transition);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.2);
+        }
+
+        .quick-action-card:hover i {
+            background: var(--gradient-primary);
+            color: white;
+            transform: scale(1.1) rotate(5deg);
+            box-shadow: 0 8px 25px rgba(67, 97, 238, 0.3);
+        }
+
+        .quick-action-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .quick-action-card p {
+            font-size: 14px;
+            color: var(--gray-color);
+            line-height: 1.5;
+        }
+
+        /* Recent Activity */
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 30px;
+            border: 1px solid rgba(67, 97, 238, 0.1);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 15px 40px rgba(67, 97, 238, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
+            border-bottom: 1px solid rgba(67, 97, 238, 0.05);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title i {
+            color: var(--primary-color);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 20px;
+            border-radius: var(--border-radius-sm);
+            font-weight: 500;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            border: none;
+            gap: 8px;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary-color);
+            color: var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-light);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.1);
+        }
+
+        .activity-list {
+            padding: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--gray-color);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: var(--primary-light);
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: var(--dark-color);
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            font-size: 15px;
+            max-width: 400px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Transaction item styles */
+        .transaction-item {
+            padding: 18px 25px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: var(--transition);
+            animation: slideIn 0.3s ease-out forwards;
+            opacity: 0;
+            transform: translateX(-10px);
+        }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .transaction-item:nth-child(1) { animation-delay: 0.1s; }
+        .transaction-item:nth-child(2) { animation-delay: 0.2s; }
+        .transaction-item:nth-child(3) { animation-delay: 0.3s; }
+        .transaction-item:nth-child(4) { animation-delay: 0.4s; }
+        .transaction-item:nth-child(5) { animation-delay: 0.5s; }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .transaction-item:hover {
+            background-color: rgba(67, 97, 238, 0.03);
+        }
+
+        .transaction-info {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+        }
+
+        .transaction-category {
+            font-weight: 500;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .transaction-category i {
+            width: 36px;
+            height: 36px;
+            background: var(--primary-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-color);
+            font-size: 14px;
+        }
+
+        .transaction-note {
+            font-size: 13px;
+            color: var(--gray-color);
+            padding-left: 46px;
+        }
+
+        .transaction-amount {
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .transaction-date {
+            font-size: 12px;
+            color: var(--gray-color);
+            margin-top: 4px;
+        }
+
+        /* Color coding */
+        .transaction-item.income .transaction-amount {
+            color: var(--success-color);
+        }
+
+        .transaction-item.expense .transaction-amount {
+            color: var(--error-color);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(3px);
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-content {
+            background-color: #fff;
+            margin: 10% auto;
+            padding: 25px;
+            border-radius: var(--border-radius);
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(-20px);
+            opacity: 0;
+            animation: modalFadeIn 0.3s ease-out 0.1s forwards;
+        }
+
+        @keyframes modalFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            font-size: 22px;
+            font-weight: 600;
+            color: var(--dark-color);
+        }
+
+        .close-modal {
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--gray-color);
+            transition: var(--transition);
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .close-modal:hover {
+            color: var(--error-color);
+            background: rgba(255, 77, 77, 0.1);
+        }
+
+        .group-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .group-list li {
+            padding: 14px 20px;
+            margin: 8px 0;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius-sm);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: 500;
+        }
+
+        .group-list li i {
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        .group-list li:hover {
+            background-color: var(--primary-light);
+            transform: translateX(5px);
+        }
+
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(67, 97, 238, 0.1);
+        }
+
+        .stat-card:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .stat-card.income:before {
+            background: var(--gradient-success);
+        }
+
+        .stat-card.expense:before {
+            background: var(--gradient-error);
+        }
+
+        .stat-card .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-card .stat-title {
+            font-size: 16px;
+            color: var(--gray-color);
+            font-weight: 500;
+        }
+
+        .stat-card .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--primary-light);
+            color: var(--primary-color);
+            font-size: 18px;
+        }
+
+        .stat-card.income .stat-icon {
+            background: rgba(75, 181, 67, 0.1);
+            color: var(--success-color);
+        }
+
+        .stat-card.expense .stat-icon {
+            background: rgba(255, 77, 77, 0.1);
+            color: var(--error-color);
+        }
+
+        .stat-card .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .stat-change {
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .stat-card .stat-change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-card .stat-change.negative {
+            color: var(--error-color);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .quick-actions, .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-links {
+                gap: 15px;
+            }
+
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .page-title {
+                font-size: 26px;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <nav class="navbar">
+            <a href="home.html" class="logo">
+                <i class="fas fa-wallet"></i>
+                <span>Finance Tracker</span>
+            </a>
+            <div class="nav-links">
+                <a href="home.html" class="active">Dashboard</a>
+                <a href="transactions.html">Transactions</a>
+                <a href="groups.html">Groups</a>
+                <a href="reports.html">Reports</a>
+                <div class="user-profile">
+                    <img src="https://ui-avatars.com/api/?name=User&background=4361ee&color=fff" alt="User">
+                    <span>Loading...</span>
+                    <div class="dropdown">
+                        <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                        <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container">
+        <div class="page-header">
+            <h1 class="page-title">Dashboard</h1>
+            <div class="welcome-message">Welcome back! Here's your financial overview</div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <span class="stat-title">Total Balance</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                </div>
+                <div class="stat-value">$5,284.50</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>12.5% from last month</span>
+                </div>
+            </div>
+            <div class="stat-card income">
+                <div class="stat-header">
+                    <span class="stat-title">Total Income</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-arrow-down"></i>
+                    </div>
+                </div>
+                <div class="stat-value">$3,450.00</div>
+                <div class="stat-change positive">
+                    <i class="fas fa-arrow-up"></i>
+                    <span>8.2% from last month</span>
+                </div>
+            </div>
+            <div class="stat-card expense">
+                <div class="stat-header">
+                    <span class="stat-title">Total Expenses</span>
+                    <div class="stat-icon">
+                        <i class="fas fa-arrow-up"></i>
+                    </div>
+                </div>
+                <div class="stat-value">$1,165.50</div>
+                <div class="stat-change negative">
+                    <i class="fas fa-arrow-down"></i>
+                    <span>4.3% from last month</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <div class="quick-action-card" id="createTransactionBtn">
+                <i class="fas fa-exchange-alt"></i>
+                <h3>Add Transaction</h3>
+                <p>Record new income or expense</p>
+            </div>
+            <div class="quick-action-card" id="createGroupBtn">
+                <i class="fas fa-folder-plus"></i>
+                <h3>Create Group</h3>
+                <p>Organize transactions</p>
+            </div>
+            <div class="quick-action-card" id="generateReportBtn">
+                <i class="fas fa-chart-pie"></i>
+                <h3>Generate Report</h3>
+                <p>View financial insights</p>
+            </div>
+            <div class="quick-action-card" id="viewAllBtn">
+                <i class="fas fa-list"></i>
+                <h3>View All</h3>
+                <p>See complete records</p>
+            </div>
+        </div>
+
+        <div class="card recent-activity">
+            <div class="card-header">
+                <h2 class="card-title"><i class="fas fa-history"></i> Recent Transactions</h2>
+                <a href="transactions.html" class="btn btn-outline">
+                    <i class="fas fa-arrow-right"></i>
+                    View All
+                </a>
+            </div>
+            <div class="activity-list">
+                <div class="empty-state">
+                    <i class="fas fa-exchange-alt"></i>
+                    <h3>No Recent Transactions</h3>
+                    <p>Your recent transactions will appear here. Start by adding your first transaction.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Group Selection Modal -->
+        <div id="groupSelectionModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3>Select a Group</h3>
+                    <span class="close-modal">&times;</span>
+                </div>
+                <div class="modal-body">
+                    <p>Choose a group to view its transactions:</p>
+                    <ul id="groupList" class="group-list">
+                        <!-- Groups will be populated here -->
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check authentication
+        const authToken = localStorage.getItem('authToken');
+        if (!authToken) {
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // DOM Elements
+        const createGroupBtn = document.getElementById('createGroupBtn');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const createTransactionBtn = document.getElementById('createTransactionBtn');
+        const generateReportBtn = document.getElementById('generateReportBtn');
+        const viewAllBtn = document.getElementById('viewAllBtn');
+        const groupSelectionModal = document.getElementById('groupSelectionModal');
+        const groupList = document.getElementById('groupList');
+        const closeModal = document.querySelector('.close-modal');
+
+        // Event Listeners
+        createGroupBtn.addEventListener('click', function() {
+            window.location.href = 'groups.html';
+        });
+
+        createTransactionBtn.addEventListener('click', function() {
+            window.location.href = 'create-transaction.html';
+        });
+
+        generateReportBtn.addEventListener('click', function() {
+            window.location.href = 'reports.html';
+        });
+
+        viewAllBtn.addEventListener('click', async function() {
+            try {
+                // Fetch groups from API
+                const response = await fetch('/api/groups', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch groups');
+                }
+
+                const groups = await response.json();
+
+                if (groups.length === 0) {
+                    alert('No groups available. Please create a group first.');
+                    window.location.href = 'groups.html';
+                    return;
+                }
+
+                // Populate group list
+                groupList.innerHTML = '';
+                groups.forEach(group => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `<i class="fas fa-folder"></i> ${group.name}`;
+                    li.addEventListener('click', function() {
+                        window.location.href = `transactions.html?groupId=${group.id}`;
+                    });
+                    groupList.appendChild(li);
+                });
+
+                // Show modal
+                groupSelectionModal.style.display = 'block';
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to load groups. Please try again.');
+            }
+        });
+
+        // Close modal when clicking X
+        closeModal.addEventListener('click', function() {
+            groupSelectionModal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === groupSelectionModal) {
+                groupSelectionModal.style.display = 'none';
+            }
+        });
+
+        logoutBtn.addEventListener('click', function() {
+            localStorage.removeItem('authToken');
+            window.location.href = 'index.html';
+        });
+
+        // Load dashboard data
+        loadDashboardData();
+    });
+
+    async function loadDashboardData() {
+    try {
+        const authToken = localStorage.getItem('authToken');
+
+        // Fetch user data
+        const userResponse = await fetch('/api/user/me', {
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!userResponse.ok) {
+            throw new Error('Failed to fetch user data');
+        }
+
+        const userData = await userResponse.json();
+
+        // Update the user name in the navbar
+        document.querySelector('.user-profile span').textContent = userData.username;
+        document.querySelector('.user-profile img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.username)}&background=4361ee&color=fff`;
+
+        // Fetch recent transactions
+        const transactionsResponse = await fetch('/api/transactions/recent', {
+            headers: {
+                'Authorization': `Bearer ${authToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!transactionsResponse.ok) {
+            throw new Error('Failed to fetch recent transactions');
+        }
+
+        const transactions = await transactionsResponse.json();
+        displayRecentTransactions(transactions);
+    } catch (error) {
+        console.error('Error loading dashboard data:', error);
+    }
+}
+
+    function displayRecentTransactions(transactions) {
+        const activityList = document.querySelector('.activity-list');
+
+        if (transactions.length === 0) {
+            activityList.innerHTML = `
+                <div class="empty-state">
+                    <i class="fas fa-exchange-alt"></i>
+                    <h3>No Recent Transactions</h3>
+                    <p>Your recent transactions will appear here. Start by adding your first transaction.</p>
+                </div>
+            `;
+            return;
+        }
+
+        let html = '';
+        transactions.forEach(transaction => {
+            const colorClass = transaction.type === 'EXPENSE' ? 'expense' : 'income';
+            const sign = transaction.type === 'EXPENSE' ? '-' : '+';
+            const icon = transaction.type === 'EXPENSE' ? 'fa-arrow-up' : 'fa-arrow-down';
+            const date = new Date(transaction.date).toLocaleDateString('en-US', {
+                month: 'short',
+                day: 'numeric'
+            });
+
+            html += `
+                <div class="transaction-item ${colorClass}">
+                    <div class="transaction-info">
+                        <span class="transaction-category">
+                            <i class="fas ${icon}"></i>
+                            ${transaction.category}
+                        </span>
+                        <span class="transaction-note">${transaction.note || ''}</span>
+                        <span class="transaction-date">${date}</span>
+                    </div>
+                    <div class="transaction-amount">
+                        ${sign}$${Math.abs(transaction.amount).toFixed(2)}
+                    </div>
+                </div>
+            `;
+        });
+
+        activityList.innerHTML = html;
+    }
+</script>
+</body>
+</html>

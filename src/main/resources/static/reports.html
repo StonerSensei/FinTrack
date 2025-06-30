@@ -1,0 +1,1101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Reports | Finance Tracker</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        :root {
+            --primary-color: #4361ee;
+            --primary-light: #eef2ff;
+            --secondary-color: #3f37c9;
+            --success-color: #10b981;
+            --success-light: #d1fae5;
+            --danger-color: #ef4444;
+            --danger-light: #fee2e2;
+            --warning-color: #f59e0b;
+            --warning-light: #fef3c7;
+            --info-color: #3b82f6;
+            --info-light: #dbeafe;
+            --light-color: #f8fafc;
+            --dark-color: #1e293b;
+            --text-color: #334155;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --border-radius: 10px;
+            --border-radius-sm: 6px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-color);
+            background-color: #f1f5f9;
+            line-height: 1.6;
+        }
+
+        .navbar {
+            background: white;
+            box-shadow: var(--box-shadow);
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-weight: 700;
+            color: var(--dark-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .logo i {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--primary-color);
+            background-color: var(--primary-light);
+        }
+
+        .nav-links a.active {
+            font-weight: 600;
+        }
+
+        .user-profile {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            cursor: pointer;
+        }
+
+        .user-profile img {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-profile .dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--box-shadow-lg);
+            padding: 0.75rem 0;
+            width: 200px;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: var(--transition);
+        }
+
+        .user-profile:hover .dropdown {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .user-profile .dropdown a {
+            display: block;
+            padding: 0.5rem 1.5rem;
+            color: var(--text-color);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .user-profile .dropdown a:hover {
+            background-color: var(--light-color);
+            color: var(--primary-color);
+        }
+
+        .user-profile .dropdown a i {
+            margin-right: 0.75rem;
+            width: 20px;
+            text-align: center;
+        }
+
+        .report-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            border-radius: var(--border-radius);
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .report-header::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .report-header::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            right: -30px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+
+        .report-header h1 {
+            font-weight: 700;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .report-header h1 i {
+            margin-right: 0.75rem;
+        }
+
+        .report-header p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 0;
+            position: relative;
+            z-index: 1;
+        }
+
+        .summary-card {
+            border-radius: var(--border-radius);
+            padding: 1.75rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            height: 100%;
+            background: white;
+            border-top: 4px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
+            pointer-events: none;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow-lg);
+        }
+
+        .summary-card.income {
+            border-top-color: var(--success-color);
+        }
+
+        .summary-card.expense {
+            border-top-color: var(--danger-color);
+        }
+
+        .summary-card.balance {
+            border-top-color: var(--primary-color);
+        }
+
+        .summary-card h3 {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-value {
+            font-size: 2.25rem;
+            font-weight: 700;
+            margin: 0.75rem 0;
+            font-feature-settings: 'tnum' on, 'lnum' on;
+        }
+
+        .summary-card .icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .summary-card.income .icon {
+            background-color: var(--success-light);
+            color: var(--success-color);
+        }
+
+        .summary-card.expense .icon {
+            background-color: var(--danger-light);
+            color: var(--danger-color);
+        }
+
+        .summary-card.balance .icon {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .chart-container {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .chart-container:hover {
+            box-shadow: var(--box-shadow-lg);
+        }
+
+        .chart-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .chart-title i {
+            color: var(--primary-color);
+        }
+
+        .chart-wrapper {
+            position: relative;
+            height: 300px; /* Fixed height */
+            min-height: 300px; /* Minimum height */
+            width: 100%;
+        }
+
+        .chart-container canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .filter-section {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.75rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--box-shadow);
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--dark-color);
+            margin-bottom: 0.5rem;
+            font-size: 0.875rem;
+        }
+
+        .form-control, .group-selector {
+            padding: 0.625rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius-sm);
+            font-size: 0.875rem;
+            transition: var(--transition);
+        }
+
+        .form-control:focus, .group-selector:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+            outline: none;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.625rem 1.5rem;
+            font-weight: 500;
+            border-radius: var(--border-radius-sm);
+            transition: var(--transition);
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary i {
+            margin-right: 0.5rem;
+        }
+
+        .transaction-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .transaction-table th {
+            background-color: #f8fafc;
+            font-weight: 600;
+            color: var(--text-muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .transaction-table td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .transaction-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .transaction-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .income-badge {
+            background-color: var(--success-light);
+            color: var(--success-color);
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .expense-badge {
+            background-color: var(--danger-light);
+            color: var(--danger-color);
+            padding: 0.375rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.375rem;
+        }
+
+        .text-success {
+            color: var(--success-color) !important;
+        }
+
+        .text-danger {
+            color: var(--danger-color) !important;
+        }
+
+        #loadingIndicator {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 3rem;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .spinner-border {
+            width: 3rem;
+            height: 3rem;
+            border-width: 0.25em;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #reportContent {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .report-header {
+                padding: 1.5rem;
+            }
+
+            .report-header h1 {
+                font-size: 1.5rem;
+            }
+
+            .summary-card {
+                padding: 1.25rem;
+            }
+
+            .summary-value {
+                font-size: 1.75rem;
+            }
+
+            .chart-container {
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a href="home.html" class="logo">
+                    <i class="fas fa-wallet"></i>
+                    <span>Finance Tracker</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <div class="nav-links ms-auto d-flex align-items-center">
+                        <a href="home.html">Dashboard</a>
+                        <a href="transactions.html">Transactions</a>
+                        <a href="groups.html">Groups</a>
+                        <a href="reports.html" class="active">Reports</a>
+                        <div class="user-profile ms-3">
+                            <img src="https://ui-avatars.com/api/?name=User&background=4361ee&color=fff" alt="User">
+                            <span>Loading...</span>
+                            <div class="dropdown">
+                                <a href="profile.html"><i class="fas fa-user"></i> Profile</a>
+                                <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </div>
+</header>
+
+<main class="main-content">
+    <div class="container py-4">
+        <div class="report-header">
+            <h1><i class="fas fa-chart-pie"></i> Financial Reports</h1>
+            <p class="mb-0">Gain insights into your financial health with detailed analytics and visualizations</p>
+        </div>
+
+        <div class="filter-section">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label for="groupSelect" class="form-label">Select Group</label>
+                    <select id="groupSelect" class="form-select group-selector">
+                        <option value="all">All Groups</option>
+                        <!-- Groups will be populated here -->
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label for="startDate" class="form-label">Start Date</label>
+                    <input type="date" id="startDate" class="form-control">
+                </div>
+                <div class="col-md-4">
+                    <label for="endDate" class="form-label">End Date</label>
+                    <input type="date" id="endDate" class="form-control">
+                </div>
+            </div>
+            <div class="row mt-3">
+                <div class="col-12 text-end">
+                    <button id="generateReportBtn" class="btn btn-primary">
+                        <i class="fas fa-sync-alt me-2"></i> Generate Report
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div id="loadingIndicator" class="text-center py-5" style="display: none;">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-3 text-muted">Generating your financial report...</p>
+        </div>
+
+        <div id="reportContent" style="display: none;">
+            <div class="row mb-4 g-4">
+                <div class="col-md-4">
+                    <div class="summary-card income">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h3>Total Income</h3>
+                                <div id="totalIncome" class="summary-value animated-counter">$0.00</div>
+                                <p class="text-muted mb-0">All income sources</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-arrow-down"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="summary-card expense">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h3>Total Expense</h3>
+                                <div id="totalExpense" class="summary-value animated-counter">$0.00</div>
+                                <p class="text-muted mb-0">All spending categories</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-arrow-up"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div id="balanceCard" class="summary-card balance">
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <h3>Net Balance</h3>
+                                <div id="netBalance" class="summary-value animated-counter">$0.00</div>
+                                <p class="text-muted mb-0">Income minus expenses</p>
+                            </div>
+                            <div class="icon">
+                                <i class="fas fa-balance-scale"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Income by Category</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="incomeChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="chart-container">
+                        <h3 class="chart-title"><i class="fas fa-chart-pie"></i> Expenses by Category</h3>
+                        <div class="chart-wrapper">
+                            <canvas id="expenseChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="chart-container">
+                        <h3 class="chart-title"><i class="fas fa-chart-bar"></i> Monthly Summary</h3>
+                        <div id="monthlyChart" style="min-height: 350px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="chart-container">
+                        <h3 class="chart-title"><i class="fas fa-list-ul"></i> Transaction Details</h3>
+                        <div class="table-responsive">
+                            <table class="transaction-table">
+                                <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                    <th>Type</th>
+                                    <th>Amount</th>
+                                </tr>
+                                </thead>
+                                <tbody id="transactionDetails">
+                                <!-- Transactions will be populated here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Check authentication
+        const authToken = localStorage.getItem('authToken');
+        if (!authToken) {
+            window.location.href = 'index.html';
+            return;
+        }
+
+        // Add these at the top of your script, after DOM Elements declarations
+        let incomeChartInstance = null;
+        let expenseChartInstance = null;
+        let monthlyChartInstance = null;
+
+        // DOM Elements
+        const logoutBtn = document.getElementById('logoutBtn');
+        const groupSelect = document.getElementById('groupSelect');
+        const startDate = document.getElementById('startDate');
+        const endDate = document.getElementById('endDate');
+        const generateReportBtn = document.getElementById('generateReportBtn');
+        const reportContent = document.getElementById('reportContent');
+        const loadingIndicator = document.getElementById('loadingIndicator');
+
+        // Initialize date pickers
+        const today = new Date();
+        const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+        startDate.valueAsDate = firstDayOfMonth;
+        endDate.valueAsDate = today;
+
+        // Load user groups
+        loadUserGroups();
+
+        // Event Listeners
+        generateReportBtn.addEventListener('click', generateReport);
+        logoutBtn.addEventListener('click', function() {
+            localStorage.removeItem('authToken');
+            window.location.href = 'index.html';
+        });
+
+        // Load user data
+        loadUserData();
+
+        async function loadUserData() {
+            try {
+                const response = await fetch('/api/user/me', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch user data');
+                }
+
+                const userData = await response.json();
+                document.querySelector('.user-profile span').textContent = userData.username;
+                document.querySelector('.user-profile img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.username)}&background=4361ee&color=fff`;
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
+        }
+
+        async function loadUserGroups() {
+            try {
+                const response = await fetch('/api/groups', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch groups');
+                }
+
+                const groups = await response.json();
+                populateGroupSelect(groups);
+            } catch (error) {
+                console.error('Error loading groups:', error);
+            }
+        }
+
+        function populateGroupSelect(groups) {
+            groupSelect.innerHTML = '<option value="all">All Groups</option>';
+            groups.forEach(group => {
+                const option = document.createElement('option');
+                option.value = group.id;
+                option.textContent = group.name;
+                groupSelect.appendChild(option);
+            });
+        }
+
+        async function generateReport() {
+            const groupId = groupSelect.value === 'all' ? null : groupSelect.value;
+            const start = startDate.value;
+            const end = endDate.value;
+
+            // Show loading indicator
+            loadingIndicator.style.display = 'block';
+            reportContent.style.display = 'none';
+
+            try {
+                const url = `/api/reports/summary?startDate=${start}&endDate=${end}` +
+                            (groupId ? `&groupId=${groupId}` : '');
+
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate report');
+                }
+
+                const reportData = await response.json();
+                renderReport(reportData);
+
+                // Load monthly data
+                const monthlyResponse = await fetch('/api/reports/monthly?monthsBack=6', {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (monthlyResponse.ok) {
+                    const monthlyData = await monthlyResponse.json();
+                    renderMonthlyChart(monthlyData);
+                }
+
+            } catch (error) {
+                console.error('Error generating report:', error);
+                alert('Failed to generate report. Please try again.');
+            } finally {
+                loadingIndicator.style.display = 'none';
+                reportContent.style.display = 'block';
+            }
+        }
+
+        function renderReport(data) {
+            // Animate counters
+            animateValue('totalIncome', 0, data.totalIncome, 1000);
+            animateValue('totalExpense', 0, data.totalExpense, 1000);
+            animateValue('netBalance', 0, data.balance, 1000);
+
+            // Update balance card style based on value
+            const balanceCard = document.getElementById('balanceCard');
+            if (data.balance >= 0) {
+                balanceCard.classList.add('positive');
+                balanceCard.classList.remove('negative');
+            } else {
+                balanceCard.classList.add('negative');
+                balanceCard.classList.remove('positive');
+            }
+
+            // Render charts
+            renderPieChart('incomeChart', data.incomeByCategory, 'Income by Category', '#10b981');
+            renderPieChart('expenseChart', data.expenseByCategory, 'Expenses by Category', '#ef4444');
+
+            // Render transaction details
+            renderTransactionDetails(data.transactions);
+        }
+
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                const value = Math.floor(progress * (end - start) + start);
+                obj.textContent = '$' + value.toLocaleString('en-US', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        function renderPieChart(canvasId, data, title, color) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+
+             // Destroy previous chart if it exists
+            if (canvasId === 'incomeChart' && incomeChartInstance) {
+                incomeChartInstance.destroy();
+            } else if (canvasId === 'expenseChart' && expenseChartInstance) {
+                expenseChartInstance.destroy();
+            }
+
+            // Convert data object to arrays
+            const labels = Object.keys(data);
+            const values = Object.values(data);
+            const backgroundColors = generateColors(labels.length, color);
+
+            // Create and assign the chart to a variable
+            const newChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        backgroundColor: backgroundColors,
+                        borderWidth: 1,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '70%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                usePointStyle: true,
+                                padding: 20,
+                                font: {
+                                    family: 'Inter'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            backgroundColor: 'rgba(30, 41, 59, 0.95)',
+                            titleFont: {
+                                family: 'Inter',
+                                size: 14,
+                                weight: '600'
+                            },
+                            bodyFont: {
+                                family: 'Inter',
+                                size: 13
+                            },
+                            padding: 12,
+                            usePointStyle: true,
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.raw || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = Math.round((value / total) * 100);
+                                    return `${label}: $${value.toFixed(2)} (${percentage}%)`;
+                                }
+                            }
+                        },
+                        title: {
+                            display: false,
+                            text: title
+                        }
+                    },
+                    onClick: (evt, elements) => {
+                        if (elements.length > 0) {
+                            const index = elements[0].index;
+                            const label = newChart.data.labels[index]; // Fixed: use newChart instead of this
+                            console.log('Clicked on:', label);
+                            // You could add filtering functionality here
+                        }
+                    }
+                }
+            });
+
+            // Store the chart instance
+            if (canvasId === 'incomeChart') {
+                incomeChartInstance = newChart;
+            } else if (canvasId === 'expenseChart') {
+                expenseChartInstance = newChart;
+            }
+        }
+
+        function renderMonthlyChart(data) {
+            const months = data.map(item => `${item.month} ${item.year}`);
+            const incomeData = data.map(item => item.income);
+            const expenseData = data.map(item => item.expense);
+
+            if (monthlyChartInstance) {
+                monthlyChartInstance.destroy();
+            }
+
+            const options = {
+                series: [{
+                    name: 'Income',
+                    data: incomeData
+                }, {
+                    name: 'Expense',
+                    data: expenseData
+                }],
+                chart: {
+                    type: 'bar',
+                    height: 350,
+                    stacked: true,
+                    toolbar: {
+                        show: true
+                    },
+                    zoom: {
+                        enabled: true
+                    },
+                    fontFamily: 'Inter'
+                },
+                responsive: [{
+                    breakpoint: 480,
+                    options: {
+                        legend: {
+                            position: 'bottom',
+                            offsetX: -10,
+                            offsetY: 0
+                        }
+                    }
+                }],
+                plotOptions: {
+                    bar: {
+                        horizontal: false,
+                        borderRadius: 4,
+                        columnWidth: '55%',
+                    },
+                },
+                dataLabels: {
+                    enabled: false
+                },
+                stroke: {
+                    show: true,
+                    width: 2,
+                    colors: ['transparent']
+                },
+                xaxis: {
+                    type: 'category',
+                    categories: months,
+                    labels: {
+                        style: {
+                            fontFamily: 'Inter'
+                        }
+                    }
+                },
+                yaxis: {
+                    title: {
+                        text: 'Amount ($)',
+                        style: {
+                            fontFamily: 'Inter'
+                        }
+                    },
+                    labels: {
+                        formatter: function (val) {
+                            return "$" + val.toLocaleString();
+                        },
+                        style: {
+                            fontFamily: 'Inter'
+                        }
+                    }
+                },
+                legend: {
+                    position: 'right',
+                    offsetY: 40,
+                    fontFamily: 'Inter'
+                },
+                fill: {
+                    opacity: 1
+                },
+                colors: ['#10b981', '#ef4444'],
+                tooltip: {
+                    y: {
+                        formatter: function (val) {
+                            return "$" + val.toLocaleString('en-US', {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2
+                            });
+                        }
+                    },
+                    style: {
+                        fontFamily: 'Inter'
+                    }
+                }
+            };
+
+            monthlyChartInstance = new ApexCharts(document.querySelector("#monthlyChart"), options);
+            monthlyChartInstance.render();
+        }
+
+        function renderTransactionDetails(transactions) {
+            const tbody = document.getElementById('transactionDetails');
+            tbody.innerHTML = '';
+
+            if (transactions.length === 0) {
+                const tr = document.createElement('tr');
+                tr.innerHTML = '<td colspan="5" class="text-center py-4 text-muted">No transactions found for the selected period</td>';
+                tbody.appendChild(tr);
+                return;
+            }
+
+            transactions.forEach(transaction => {
+                const tr = document.createElement('tr');
+
+                const date = new Date(transaction.date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                });
+
+                const typeBadge = transaction.type === 'INCOME' ?
+                    '<span class="income-badge"><i class="fas fa-arrow-down"></i> Income</span>' :
+                    '<span class="expense-badge"><i class="fas fa-arrow-up"></i> Expense</span>';
+
+                const amountClass = transaction.type === 'INCOME' ? 'text-success' : 'text-danger';
+                const amountSign = transaction.type === 'INCOME' ? '+' : '-';
+
+                tr.innerHTML = `
+                    <td>${date}</td>
+                    <td>${transaction.category}</td>
+                    <td>${transaction.note || '--'}</td>
+                    <td>${typeBadge}</td>
+                    <td class="${amountClass} fw-semibold">${amountSign}$${Math.abs(transaction.amount).toFixed(2)}</td>
+                `;
+
+                tbody.appendChild(tr);
+            });
+        }
+
+        function generateColors(count, baseColor) {
+            // Convert hex to RGB
+            let r, g, b;
+            if (baseColor.startsWith('rgb')) {
+                [r, g, b] = baseColor.match(/\d+/g).map(Number);
+            } else {
+                const hex = baseColor.replace('#', '');
+                r = parseInt(hex.substring(0, 2), 16);
+                g = parseInt(hex.substring(2, 4), 16);
+                b = parseInt(hex.substring(4, 6), 16);
+            }
+
+            const colors = [];
+            for (let i = 0; i < count; i++) {
+                // Adjust brightness for variation
+                const brightness = 0.7 + (0.3 * i / count);
+                colors.push(
+                    `rgba(${Math.floor(r * brightness)}, ${Math.floor(g * brightness)}, ${Math.floor(b * brightness)}, 0.8)`
+                );
+            }
+            return colors;
+        }
+    });
+</script>
+</body>
+</html>
