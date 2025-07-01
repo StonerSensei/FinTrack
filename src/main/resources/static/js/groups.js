@@ -13,10 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const toast = document.getElementById('toast');
     const logoutBtn = document.getElementById('logoutBtn');
 
-    // Current group to be deleted
     let currentGroupId = null;
 
-    // Event Listeners
     createGroupBtn.addEventListener('click', () => {
         groupModal.classList.add('active');
     });
@@ -39,10 +37,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     logoutBtn.addEventListener('click', handleLogout);
 
-    // Load groups when page loads
     loadGroups();
 
-    // Form Submission
     groupForm.addEventListener('submit', function(e) {
         e.preventDefault();
         const groupName = document.getElementById('groupName').value.trim();
@@ -52,7 +48,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Functions
     function loadGroups() {
         const authToken = localStorage.getItem('authToken');
 
@@ -123,7 +118,6 @@ document.addEventListener('DOMContentLoaded', function() {
         html += '</div>';
         groupsContainer.innerHTML = html;
 
-        // Add event listeners to action buttons
         document.querySelectorAll('.edit-group').forEach(btn => {
             btn.addEventListener('click', function() {
                 const groupId = this.getAttribute('data-id');
@@ -180,18 +174,15 @@ document.addEventListener('DOMContentLoaded', function() {
         const groupCard = document.querySelector(`.group-card[data-id="${groupId}"]`);
         const currentName = groupCard.querySelector('.group-name').textContent;
 
-        // Set current name in modal
         document.getElementById('groupName').value = currentName;
         groupModal.classList.add('active');
 
-        // Change modal to edit mode
         const modalTitle = document.querySelector('.modal-title');
         const submitBtn = groupForm.querySelector('button[type="submit"]');
 
         modalTitle.textContent = 'Edit Group';
         submitBtn.textContent = 'Update Group';
 
-        // Change form submission to update
         groupForm.onsubmit = function(e) {
             e.preventDefault();
             const newName = document.getElementById('groupName').value.trim();
@@ -231,7 +222,6 @@ document.addEventListener('DOMContentLoaded', function() {
             groupForm.reset();
             loadGroups();
 
-            // Reset form to create mode
             const modalTitle = document.querySelector('.modal-title');
             const submitBtn = groupForm.querySelector('button[type="submit"]');
 
@@ -315,7 +305,6 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'index.html';
     }
 
-    // Close modals when clicking outside
     window.addEventListener('click', function(e) {
         if (e.target === groupModal) {
             groupModal.classList.remove('active');

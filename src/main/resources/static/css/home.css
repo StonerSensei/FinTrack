@@ -662,7 +662,6 @@ header {
     color: var(--error-color);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .quick-actions, .stats-grid {
         grid-template-columns: 1fr;

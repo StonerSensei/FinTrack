@@ -16,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const groupList = document.getElementById('groupList');
     const closeModal = document.querySelector('.close-modal');
 
-    // Event Listeners
     createGroupBtn.addEventListener('click', function() {
         window.location.href = 'groups.html';
     });
@@ -31,7 +30,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     viewAllBtn.addEventListener('click', async function() {
         try {
-            // Fetch groups from API
             const response = await fetch('/api/groups', {
                 headers: {
                     'Authorization': `Bearer ${authToken}`,
@@ -51,7 +49,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
 
-            // Populate group list
             groupList.innerHTML = '';
             groups.forEach(group => {
                 const li = document.createElement('li');
@@ -62,7 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 groupList.appendChild(li);
             });
 
-            // Show modal
             groupSelectionModal.style.display = 'block';
 
         } catch (error) {
@@ -71,12 +67,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Close modal when clicking X
     closeModal.addEventListener('click', function() {
         groupSelectionModal.style.display = 'none';
     });
 
-    // Close modal when clicking outside
     window.addEventListener('click', function(event) {
         if (event.target === groupSelectionModal) {
             groupSelectionModal.style.display = 'none';
@@ -88,7 +82,6 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = 'index.html';
     });
 
-    // Load dashboard data
     loadDashboardData();
 });
 
@@ -96,7 +89,6 @@ async function loadDashboardData() {
     try {
         const authToken = localStorage.getItem('authToken');
 
-        // Fetch user data
         const userResponse = await fetch('/api/user/me', {
             headers: {
                 'Authorization': `Bearer ${authToken}`,
@@ -110,11 +102,9 @@ async function loadDashboardData() {
 
         const userData = await userResponse.json();
 
-        // Update the user name in the navbar
         document.querySelector('.user-profile span').textContent = userData.username;
         document.querySelector('.user-profile img').src = `https://ui-avatars.com/api/?name=${encodeURIComponent(userData.username)}&background=4361ee&color=fff`;
 
-        // Fetch recent transactions
         const transactionsResponse = await fetch('/api/transactions/recent', {
             headers: {
                 'Authorization': `Bearer ${authToken}`,

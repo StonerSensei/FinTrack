@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Check authentication
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
         window.location.href = 'index.html';
@@ -29,18 +28,14 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // DOM Elements
     const logoutBtn = document.getElementById('logoutBtn');
     const transactionForm = document.getElementById('transactionForm');
     const groupSelect = document.getElementById('group');
 
-    // Set default date to today
     document.getElementById('date').valueAsDate = new Date();
 
-    // Fetch groups from API
     fetchGroups();
 
-    // Event Listeners
     logoutBtn.addEventListener('click', function() {
         localStorage.removeItem('authToken');
         window.location.href = 'index.html';
@@ -51,7 +46,6 @@ document.addEventListener('DOMContentLoaded', function() {
         createTransaction();
     });
 
-    // Functions
     async function fetchGroups() {
         try {
             const response = await fetch('/api/groups', {

@@ -262,7 +262,6 @@ header {
     background: var(--primary-light);
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .container {
         padding: 15px;

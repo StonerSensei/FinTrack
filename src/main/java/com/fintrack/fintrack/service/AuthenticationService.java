@@ -30,9 +30,7 @@ public class AuthenticationService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    // For Register
     public AuthResponse register(RegisterRequest registerRequest) {
-        // Check if username already exists
         if (userRepository.findByUsername(registerRequest.getUsername()).isPresent()) {
             throw new RuntimeException("Username already exists");
         }
@@ -48,7 +46,6 @@ public class AuthenticationService {
         return new AuthResponse(token);
     }
 
-    // For Login
     public AuthResponse login(LoginRequest loginRequest) {
         try {
             authenticationManager.authenticate(

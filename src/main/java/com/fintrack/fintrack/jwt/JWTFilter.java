@@ -56,9 +56,7 @@ public class JWTFilter extends OncePerRequestFilter {
                 }
             }
         } catch (Exception e) {
-            // Log the error but don't stop the filter chain
             System.err.println("JWT processing failed: " + e.getMessage());
-            // Could also log: e.printStackTrace();
         }
 
         filterChain.doFilter(request, response);

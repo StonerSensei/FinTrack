@@ -21,7 +21,6 @@ public class AuthController {
             AuthResponse response = authService.register(request);
             return ResponseEntity.ok(response);
         } catch (RuntimeException e) {
-            // Fix: Null-safe string comparison
             if (e.getMessage() != null && e.getMessage().equals("Username already exists")) {
                 return ResponseEntity.badRequest().body("Username already exists");
             }

@@ -6,12 +6,10 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
 
-    // Add these at the top of your script, after DOM Elements declarations
     let incomeChartInstance = null;
     let expenseChartInstance = null;
     let monthlyChartInstance = null;
 
-    // DOM Elements
     const logoutBtn = document.getElementById('logoutBtn');
     const groupSelect = document.getElementById('groupSelect');
     const startDate = document.getElementById('startDate');
@@ -20,24 +18,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const reportContent = document.getElementById('reportContent');
     const loadingIndicator = document.getElementById('loadingIndicator');
 
-    // Initialize date pickers
     const today = new Date();
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
     startDate.valueAsDate = firstDayOfMonth;
     endDate.valueAsDate = today;
 
-    // Load user groups
     loadUserGroups();
 
-    // Event Listeners
     generateReportBtn.addEventListener('click', generateReport);
     logoutBtn.addEventListener('click', function() {
         localStorage.removeItem('authToken');
         window.location.href = 'index.html';
     });
 
-    // Load user data
     loadUserData();
 
     async function loadUserData() {
@@ -96,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const start = startDate.value;
         const end = endDate.value;
 
-        // Show loading indicator
         loadingIndicator.style.display = 'block';
         reportContent.style.display = 'none';
 
@@ -118,7 +111,6 @@ document.addEventListener('DOMContentLoaded', function() {
             const reportData = await response.json();
             renderReport(reportData);
 
-            // Load monthly data
             const monthlyResponse = await fetch('/api/reports/monthly?monthsBack=6', {
                 headers: {
                     'Authorization': `Bearer ${authToken}`,
@@ -141,12 +133,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderReport(data) {
-        // Animate counters
         animateValue('totalIncome', 0, data.totalIncome, 1000);
         animateValue('totalExpense', 0, data.totalExpense, 1000);
         animateValue('netBalance', 0, data.balance, 1000);
 
-        // Update balance card style based on value
         const balanceCard = document.getElementById('balanceCard');
         if (data.balance >= 0) {
             balanceCard.classList.add('positive');
@@ -156,11 +146,9 @@ document.addEventListener('DOMContentLoaded', function() {
             balanceCard.classList.remove('positive');
         }
 
-        // Render charts
         renderPieChart('incomeChart', data.incomeByCategory, 'Income by Category', '#10b981');
         renderPieChart('expenseChart', data.expenseByCategory, 'Expenses by Category', '#ef4444');
 
-        // Render transaction details
         renderTransactionDetails(data.transactions);
     }
 
@@ -185,19 +173,16 @@ document.addEventListener('DOMContentLoaded', function() {
     function renderPieChart(canvasId, data, title, color) {
         const ctx = document.getElementById(canvasId).getContext('2d');
 
-         // Destroy previous chart if it exists
         if (canvasId === 'incomeChart' && incomeChartInstance) {
             incomeChartInstance.destroy();
         } else if (canvasId === 'expenseChart' && expenseChartInstance) {
             expenseChartInstance.destroy();
         }
 
-        // Convert data object to arrays
         const labels = Object.keys(data);
         const values = Object.values(data);
         const backgroundColors = generateColors(labels.length, color);
 
-        // Create and assign the chart to a variable
         const newChart = new Chart(ctx, {
             type: 'doughnut',
             data: {
@@ -257,13 +242,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         const index = elements[0].index;
                         const label = newChart.data.labels[index]; // Fixed: use newChart instead of this
                         console.log('Clicked on:', label);
-                        // You could add filtering functionality here
                     }
                 }
             }
         });
 
-        // Store the chart instance
         if (canvasId === 'incomeChart') {
             incomeChartInstance = newChart;
         } else if (canvasId === 'expenseChart') {
@@ -418,7 +401,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function generateColors(count, baseColor) {
-        // Convert hex to RGB
+
         let r, g, b;
         if (baseColor.startsWith('rgb')) {
             [r, g, b] = baseColor.match(/\d+/g).map(Number);
@@ -431,7 +414,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         const colors = [];
         for (let i = 0; i < count; i++) {
-            // Adjust brightness for variation
             const brightness = 0.7 + (0.3 * i / count);
             colors.push(
                 `rgba(${Math.floor(r * brightness)}, ${Math.floor(g * brightness)}, ${Math.floor(b * brightness)}, 0.8)`

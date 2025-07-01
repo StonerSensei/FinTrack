@@ -440,7 +440,6 @@ body {
     animation: pulse 2s infinite;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
     .report-header {
         padding: 1.5rem;

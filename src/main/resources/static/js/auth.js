@@ -1,11 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Login form handling
     const loginForm = document.getElementById('loginForm');
     if (loginForm) {
         loginForm.addEventListener('submit', handleLogin);
     }
 
-    // Register form handling
     const registerForm = document.getElementById('registerForm');
     if (registerForm) {
         registerForm.addEventListener('submit', handleRegister);
@@ -13,7 +11,6 @@ document.addEventListener('DOMContentLoaded', function() {
         setupPasswordConfirmation();
     }
 
-    // Check for remember me functionality
     checkRememberMe();
 });
 
@@ -25,7 +22,6 @@ function handleLogin(e) {
     const password = form.password.value;
     const rememberMe = form.querySelector('#rememberMe').checked;
 
-    // Show loading state
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalBtnText = submitBtn.innerHTML;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
@@ -45,24 +41,20 @@ function handleLogin(e) {
             return response.json();
         })
         .then(data => {
-            // Store token
             localStorage.setItem('authToken', data.token);
 
-            // Remember username if checked
             if (rememberMe) {
                 localStorage.setItem('rememberedUsername', username);
             } else {
                 localStorage.removeItem('rememberedUsername');
             }
 
-            // Redirect to home.html
             window.location.href = 'home.html';
         })
         .catch(error => {
             submitBtn.innerHTML = originalBtnText;
             submitBtn.disabled = false;
 
-            // Show error message
             const errorMessage = error.message.includes('Invalid credentials') ?
                 'Invalid username or password' : 'Login failed. Please try again.';
 
@@ -78,13 +70,11 @@ function handleRegister(e) {
     const password = form.password.value;
     const confirmPassword = form.querySelector('#confirmPassword').value;
 
-    // Validate password match
     if (password !== confirmPassword) {
         showError(form, 'Passwords do not match');
         return;
     }
 
-    // Show loading state
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalBtnText = submitBtn.innerHTML;
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Registering...';
@@ -104,10 +94,8 @@ function handleRegister(e) {
             return response.json();
         })
         .then(data => {
-            // Store token
             localStorage.setItem('authToken', data.token);
 
-            // Show success message and redirect
             showSuccess(form, 'Registration successful! Redirecting...');
             setTimeout(() => {
                 window.location.href = 'home.html';
@@ -117,7 +105,6 @@ function handleRegister(e) {
             submitBtn.innerHTML = originalBtnText;
             submitBtn.disabled = false;
 
-            // Show error message
             const errorMessage = error.message.includes('Username already exists') ?
                 'Username already exists' : 'Registration failed. Please try again.';
 
@@ -135,7 +122,6 @@ function setupPasswordStrengthMeter() {
         const strengthText = document.querySelector('.strength-text');
         const sections = document.querySelectorAll('.strength-section');
 
-        // Reset
         sections.forEach(section => {
             section.style.backgroundColor = '#e0e0e0';
         });
@@ -144,25 +130,20 @@ function setupPasswordStrengthMeter() {
 
         if (password.length === 0) return;
 
-        // Calculate strength
         let strength = 0;
 
-        // Length
         if (password.length > 7) strength += 1;
 
-        // Contains numbers
         if (/\d/.test(password)) strength += 1;
 
-        // Contains special chars
         if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) strength += 1;
 
-        // Update UI
         if (strength > 0) {
             for (let i = 0; i < strength; i++) {
                 let color;
-                if (strength === 1) color = '#ff4d4d'; // Weak
-                else if (strength === 2) color = '#ffa500'; // Medium
-                else color = '#4bb543'; // Strong
+                if (strength === 1) color = '#ff4d4d';
+                else if (strength === 2) color = '#ffa500';
+                else color = '#4bb543';
 
                 sections[i].style.backgroundColor = color;
             }
@@ -208,22 +189,18 @@ function togglePassword(inputId) {
 }
 
 function showError(form, message) {
-    // Remove any existing error messages
     const existingError = form.querySelector('.error-message');
     if (existingError) {
         existingError.remove();
     }
 
-    // Create and display new error message
     const errorElement = document.createElement('div');
     errorElement.className = 'error-message';
     errorElement.textContent = message;
     errorElement.style.display = 'block';
 
-    // Insert after the form
     form.appendChild(errorElement);
 
-    // Add shake animation to form
     form.classList.add('shake');
     setTimeout(() => {
         form.classList.remove('shake');
@@ -231,19 +208,16 @@ function showError(form, message) {
 }
 
 function showSuccess(form, message) {
-    // Remove any existing success messages
     const existingSuccess = form.querySelector('.success-message');
     if (existingSuccess) {
         existingSuccess.remove();
     }
 
-    // Create and display new success message
     const successElement = document.createElement('div');
     successElement.className = 'success-message';
     successElement.textContent = message;
     successElement.style.display = 'block';
 
-    // Insert after the form
     form.appendChild(successElement);
 }
 
@@ -255,7 +229,6 @@ function checkRememberMe() {
     }
 }
 
-// Add shake animation to CSS
 const style = document.createElement('style');
 style.textContent = `
     @keyframes shake {
