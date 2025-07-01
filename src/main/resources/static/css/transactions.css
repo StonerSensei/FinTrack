@@ -416,3 +416,31 @@ header {
         overflow-x: auto;
     }
 }
+
+.transaction-actions {
+    display: flex;
+    gap: 10px;
+    margin-left: auto;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid #4361ee;
+    color: #4361ee;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-outline:hover {
+    background: #4361ee;
+    color: white;
+}
+
+.btn-outline i {
+    font-size: 14px;
+}

@@ -1,5 +1,4 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Check authentication
     const authToken = localStorage.getItem('authToken');
     if (!authToken) {
         window.location.href = 'index.html';
@@ -29,7 +28,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // DOM Elements
     const logoutBtn = document.getElementById('logoutBtn');
     const transactionsList = document.getElementById('transactionsList');
     const emptyState = document.getElementById('emptyState');
@@ -39,13 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const totalExpenses = document.getElementById('totalExpenses');
     const balance = document.getElementById('balance');
 
-    // Get group ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const groupId = urlParams.get('groupId');
 
     console.log('Group ID from URL:', groupId); // Debug log
 
-    // Load transactions
     if (groupId) {
         loadGroupTransactions(groupId);
     } else {
@@ -54,7 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
         transactionsList.style.display = 'none';
     }
 
-    // Event Listeners
     logoutBtn.addEventListener('click', function() {
         localStorage.removeItem('authToken');
         window.location.href = 'index.html';
@@ -68,7 +63,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Functions
     async function loadGroupTransactions(groupId) {
         try {
             console.log('Loading transactions for group:', groupId); // Debug log
@@ -92,11 +86,9 @@ document.addEventListener('DOMContentLoaded', function() {
             displayTransactions(transactions);
             calculateSummary(transactions);
 
-            // Set group name if transactions exist
             if (transactions.length > 0 && transactions[0].group) {
                 groupName.textContent = transactions[0].group.name;
             } else {
-                // If no transactions, try to get group name separately
                 await loadGroupName(groupId);
             }
         } catch (error) {
@@ -166,7 +158,6 @@ document.addEventListener('DOMContentLoaded', function() {
             filteredTransactions.forEach(transaction => {
                 const row = document.createElement('tr');
 
-                // Format date
                 const transactionDate = new Date(transaction.date);
                 const formattedDate = transactionDate.toLocaleDateString('en-US', {
                     year: 'numeric',
@@ -174,7 +165,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     day: 'numeric'
                 });
 
-                // Safe group name access
                 const groupName = transaction.group ? transaction.group.name : 'Unknown Group';
 
                 row.innerHTML = `
@@ -209,7 +199,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 transactionsList.appendChild(row);
             });
 
-            // Add event listeners to action buttons
             document.querySelectorAll('.action-btn.edit').forEach(btn => {
                 btn.addEventListener('click', function() {
                     const transactionId = this.getAttribute('data-id');
@@ -280,13 +269,48 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error('Failed to delete transaction');
             }
 
-            // Reload transactions after deletion
             if (groupId) {
                 loadGroupTransactions(groupId);
             }
         } catch (error) {
             console.error('Error deleting transaction:', error);
             alert('Failed to delete transaction. Please try again.');
+        }
+    }
+
+    document.getElementById('downloadPdfBtn')?.addEventListener('click', () => downloadReport('pdf'));
+    document.getElementById('downloadCsvBtn')?.addEventListener('click', () => downloadReport('csv'));
+
+    async function downloadReport(format) {
+        if (!groupId) {
+            alert('No group selected');
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/transactions/group/${groupId}/export?format=${format}`, {
+                headers: {
+                    'Authorization': `Bearer ${authToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                throw new Error(`Failed to download ${format} report`);
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `transactions_${groupName.textContent}_${new Date().toISOString().split('T')[0]}.${format}`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        } catch (error) {
+            console.error(`Error downloading ${format} report:`, error);
+            alert(`Failed to download ${format} report. Please try again.`);
         }
     }
 });
